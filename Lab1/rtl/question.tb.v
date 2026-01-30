@@ -13,7 +13,7 @@ module tb_all;
         $display("x1 x2 x3 x4 | NAND     | NOR");
         $display("-----------------------------");
 
-        for ( i = 0 ; i < 16 ; i += 1 ) begin
+        for ( i = 0 ; i < 16 ; i = i + 1 ) begin
             {x1, x2, x3, x4} = i[3:0];
             #10;
 

@@ -25,35 +25,17 @@ module question_nor (
     input x1, x2, x3, x4,
     output out
 );
-    // 1. Literal Inversions (using NOR as NOT)
-    wire n1, n2, n3, n4;
-    nor (n1, x1, x1); // x1'
-    nor (n2, x2, x2); // x2'
-    nor (n3, x3, x3); // x3'
-    nor (n4, x4, x4); // x4'
+    wire x1_n, x2_n, x3_n, x4_n;
+    wire t1_n, t2_n, t3_n;
 
-    // 2. Intermediate wires for each AND term 
-    // Because we are using NOR-only, we implement the "AND" 
-    // by feeding inverted inputs into a NOR gate.
-    wire term_a, term_b, term_c, term_d;
 
-    // Term A: x1'x2'x3' -> NOR(x1, x2, x3)
-    nor (term_a, x1, x2, x3);
+    // 2. Generate the inverted sum terms
+    nor (t1_n, ~x1, x2, ~x4); 	// This is (x1' + x2 + x4')'
+    nor (t2_n, x1, ~x2, x4);    // This is (x1 + x2' + x4)'
+    nor (t3_n, x2, ~x3);       	// This is (x2 + x3')'
 
-    // Term B: x1'x3'x4 -> NOR(x1, x3, n4)
-    nor (term_b, x1, x3, n4);
-
-    // Term C: x1x2x4' -> NOR(n1, n2, x4)
-    nor (term_c, n1, n2, x4);
-
-    // Term D: x2x3 -> NOR(n2, n3)
-    nor (term_d, n2, n3);
-
-    // 3. Final Sum (The "OR" of all terms)
-    // To OR these together using NOR gates, we NOR them all, 
-    // then invert the result.
-    wire nor_sum;
-    nor (nor_sum, term_a, term_b, term_c, term_d);
-    nor (out, nor_sum, nor_sum); // Final inversion to get f
+    // 3. The "Magic" Step: NORing the inverted terms gives the product
+    // f = (t1_n + t2_n + t3_n)' = t1_n' * t2_n' * t3_n' = (Sum1) * (Sum2) * (Sum3)
+    nor (out, t1_n, t2_n, t3_n);
 
 endmodule
