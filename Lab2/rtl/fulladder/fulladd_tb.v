@@ -13,8 +13,8 @@ module fulladd_tb();
     full_adder fa(.fsum(fsum), .fcarry(fcarry), .a(a), .b(b), .c(c));
 
     initial begin
-        expected_sum =   8'b01101001;
-        expected_carry = 8'b00010111;
+        expected_sum =   `EXPECTED_SUM;
+        expected_carry = `EXPECTED_CARRY;
     end
 
     initial begin
@@ -29,6 +29,8 @@ module fulladd_tb();
 
             $display("%b %b %b | %b    %b       %s", a, b, c, fsum, fcarry, result);
         end
+	
+	#`FINISH_TIME;
         $finish;
     end
 
